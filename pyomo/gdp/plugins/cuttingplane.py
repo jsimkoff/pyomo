@@ -101,8 +101,8 @@ class CuttingPlane_Transformation(Transformation):
         reclassify = TransformationFactory('gdp.reclassify')
 
         #
-        # Generalte the CHull relaxation (used for the separation
-        # problem to generate cutting planes
+        # Generate the CHull relaxation (used for the separation
+        # problem to generate cutting planes)
         #
         instance_rCHull = chullRelaxation.create_using(instance)
         # This relies on relaxIntegrality relaxing variables on deactivated
