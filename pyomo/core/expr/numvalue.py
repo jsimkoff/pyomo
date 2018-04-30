@@ -452,6 +452,10 @@ class NumericValue(object):
         """Return True if variables can appear in this expression"""
         return True
 
+    def is_never_variable(self):
+        """Return False because this is variable"""
+        return False
+
     def is_named_expression_type(self):
         """Return True if this numeric value is a named expression"""
         return False
@@ -842,6 +846,10 @@ class NumericConstant(NumericValue):
 
     def is_potentially_variable(self):
         return False
+
+    def is_never_variable(self):
+        """Return True because this is not variable"""
+        return True
 
     def _compute_polynomial_degree(self, result):
         return 0

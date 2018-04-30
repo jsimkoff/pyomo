@@ -549,7 +549,7 @@ def _collect_prod(exp, multiplier, idMap, compute_values, verbose, quadratic):
     #
     # LHS is a non-variable expression
     #
-    elif not exp._args_[0].is_potentially_variable():
+    elif exp._args_[0].is_never_variable():
         if compute_values:
             val = value(exp._args_[0])
             if val == 0:
@@ -562,7 +562,7 @@ def _collect_prod(exp, multiplier, idMap, compute_values, verbose, quadratic):
     #
     # RHS is a non-variable expression
     #
-    elif not exp._args_[1].is_potentially_variable():
+    elif exp._args_[1].is_never_variable():
         if compute_values:
             val = value(exp._args_[1])
             if val == 0:

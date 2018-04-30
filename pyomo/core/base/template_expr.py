@@ -107,6 +107,10 @@ class IndexTemplate(NumericValue):
         """
         return False
 
+    def is_never_variable(self):
+        """Return True because this is not variable"""
+        return True
+
     def __str__(self):
         return self.getname()
 

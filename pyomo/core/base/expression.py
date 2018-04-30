@@ -132,6 +132,10 @@ class _ExpressionData(NumericValue):
     def is_potentially_variable(self):
         return True
 
+    def is_never_variable(self):
+        """Return True because this is not variable"""
+        return False
+
 
 class _GeneralExpressionDataImpl(_ExpressionData):
     """

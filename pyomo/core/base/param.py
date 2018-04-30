@@ -155,6 +155,10 @@ class _ParamData(ComponentData, NumericValue):
         """
         return False
 
+    def is_never_variable(self):
+        """Return True because this is not variable"""
+        return True
+
     def _compute_polynomial_degree(self, result):
         """
         Returns 0 because this object can never reference variables.

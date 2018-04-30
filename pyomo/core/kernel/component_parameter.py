@@ -60,6 +60,10 @@ class IParameter(IComponent, NumericValue):
         never reference variables."""
         return False
 
+    def is_never_variable(self):
+        """A boolean indicating whether this expression is variable."""
+        return True
+
     def polynomial_degree(self):
         """Always return zero because we always validate
         that the stored expression can never reference

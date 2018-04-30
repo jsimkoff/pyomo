@@ -78,6 +78,10 @@ class _ConnectorData(ComponentData, NumericValue):
         """Return True as connectors may (should!) contain variables"""
         return True
 
+    def is_never_variable(self):
+        """Return False as connectors may contain variables"""
+        return False
+
     def polynomial_degree(self):
         ans = 0
         for v in self._iter_vars():

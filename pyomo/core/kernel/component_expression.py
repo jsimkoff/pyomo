@@ -82,6 +82,10 @@ class IIdentityExpression(NumericValue):
         reference variables."""
         return potentially_variable(self._expr)
 
+    def is_never_variable(self):
+        """A boolean indicating whether this expression is variable."""
+        return not potentially_variable(self._expr)
+
     def is_named_expression_type(self):
         """A boolean indicating whether this in a named expression."""
         return True
@@ -233,6 +237,10 @@ class IExpression(IComponent, IIdentityExpression):
         reference variables."""
         return True
 
+    def is_never_variable(self):
+        """A boolean indicating whether this expression is variable."""
+        return False
+
     #
     # Ducktyping ExpressionBase functionality
     #
@@ -282,6 +290,10 @@ class data_expression(expression):
         """A boolean indicating whether this expression can
         reference variables."""
         return False
+
+    def is_never_variable(self):
+        """A boolean indicating whether this expression is variable."""
+        return True
 
     def polynomial_degree(self):
         """Always return zero because we always validate

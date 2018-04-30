@@ -1559,6 +1559,20 @@ class ExpressionBase(NumericValue):
         """
         return True
 
+    def is_never_variable(self):
+        """
+        Return :const:`True` if this expression is never variable.
+
+        If is_potentially_variable() is :const:`False`, then this
+        function must return :const:`True`.  However, this 
+        function may be asymmetric.  It can return :const:`True`
+        even when is_potentially_variable() returns :const:`True`.
+
+        Returns:
+            A boolean.  Defaults to :const:`False` for expressions.
+        """
+        return False
+
     def is_named_expression_type(self):
         """
         Return :const:`True` if this object is a named expression.
@@ -1703,6 +1717,9 @@ class NPV_NegationExpression(NegationExpression):
     def is_potentially_variable(self):
         return False
 
+    def is_never_variable(self):
+        return True
+
 
 class ExternalFunctionExpression(ExpressionBase):
     """
@@ -1758,6 +1775,9 @@ class NPV_ExternalFunctionExpression(ExternalFunctionExpression):
 
     def is_potentially_variable(self):
         return False
+
+    def is_never_variable(self):
+        return True
 
 
 class PowExpression(ExpressionBase):
@@ -1822,6 +1842,9 @@ class NPV_PowExpression(PowExpression):
     def is_potentially_variable(self):
         return False
 
+    def is_never_variable(self):
+        return True
+
 
 class ProductExpression(ExpressionBase):
     """
@@ -1869,6 +1892,9 @@ class NPV_ProductExpression(ProductExpression):
     def is_potentially_variable(self):
         return False
 
+    def is_never_variable(self):
+        return True
+
 
 class MonomialTermExpression(ProductExpression):
     __slots__ = ()
@@ -1911,6 +1937,9 @@ class NPV_ReciprocalExpression(ReciprocalExpression):
 
     def is_potentially_variable(self):
         return False
+
+    def is_never_variable(self):
+        return True
 
 
 class _LinearOperatorExpression(ExpressionBase):
@@ -2003,6 +2032,9 @@ class RangedExpression(_LinearOperatorExpression):
                (self._args_[2].__class__ not in native_numeric_types and \
                 self._args_[2].is_potentially_variable())
 
+    def is_never_variable(self):
+        return not self.is_potentially_variable()
+
 
 class InequalityExpression(_LinearOperatorExpression):
     """
@@ -2075,6 +2107,9 @@ class InequalityExpression(_LinearOperatorExpression):
                 self._args_[0].is_potentially_variable()) or \
                (self._args_[1].__class__ not in native_numeric_types and \
                 self._args_[1].is_potentially_variable())
+
+    def is_never_variable(self):
+        return not self.is_potentially_variable()
 
 
 def inequality(lower=None, body=None, upper=None, strict=False):
@@ -2162,6 +2197,9 @@ class EqualityExpression(_LinearOperatorExpression):
     def is_potentially_variable(self):
         return self._args_[0].is_potentially_variable() or self._args_[1].is_potentially_variable()
 
+    def is_never_variable(self):
+        return not self.is_potentially_variable()
+
 
 class SumExpressionBase(_LinearOperatorExpression):
     """
@@ -2212,6 +2250,9 @@ class NPV_SumExpression(SumExpressionBase):
 
     def is_potentially_variable(self):
         return False
+
+    def is_never_variable(self):
+        return True
 
 
 class SumExpression(SumExpressionBase):
@@ -2279,6 +2320,9 @@ class SumExpression(SumExpressionBase):
                 continue
             if v.is_variable_type() or v.is_potentially_variable():
                 return True
+        return False
+
+    def is_never_variable(self):
         return False
 
     def _to_string(self, values, verbose, smap, compute_values):
@@ -2368,6 +2412,9 @@ class GetItemExpression(ExpressionBase):
                and x.is_potentially_variable():
                 return True
         return False
+
+    def is_never_variable(self):
+        return not self.is_potentially_variable()
 
     def is_fixed(self):
         if any(self._args_):
@@ -2475,6 +2522,9 @@ class Expr_ifExpression(ExpressionBase):
             ((not self._then.__class__ in native_numeric_types) and self._then.is_potentially_variable()) or \
             ((not self._else.__class__ in native_numeric_types) and self._else.is_potentially_variable())
 
+    def is_never_variable(self):
+        return not self.is_potentially_variable()
+
     def _compute_polynomial_degree(self, result):
         _if, _then, _else = result
         if _if == 0:
@@ -2550,6 +2600,9 @@ class NPV_UnaryFunctionExpression(UnaryFunctionExpression):
     def is_potentially_variable(self):
         return False
 
+    def is_never_variable(self):
+        return True
+
 
 # NOTE: This should be a special class, since the expression generation relies
 # on the Python __abs__ method.
@@ -2574,6 +2627,9 @@ class NPV_AbsExpression(AbsExpression):
 
     def is_potentially_variable(self):
         return False
+
+    def is_never_variable(self):
+        return True
 
 
 class LinearExpression(ExpressionBase):
@@ -2692,6 +2748,9 @@ class LinearExpression(ExpressionBase):
 
     def is_potentially_variable(self):
         return len(self.linear_vars) > 0
+
+    def is_never_variable(self):
+        return len(self.linear_vars) == 0
 
     def _apply_operation(self, result):
         return value(self.constant) + sum(value(c)*v.value for c,v in zip(self.linear_coefs, self.linear_vars))

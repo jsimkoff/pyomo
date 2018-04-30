@@ -256,6 +256,10 @@ class IVariable(IComponent, NumericValue):
         variable."""
         return True
 
+    def is_never_variable(self):
+        """A boolean indicating whether this expression is variable."""
+        return False
+
     def polynomial_degree(self):
         """Return the polynomial degree of this
         expression"""

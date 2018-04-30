@@ -148,6 +148,10 @@ class _VarData(ComponentData, NumericValue):
         """Returns True because this is a variable."""
         return True
 
+    def is_never_variable(self):
+        """Return False because this is variable"""
+        return False
+
     def _compute_polynomial_degree(self, result):
         """
         If the variable is fixed, it represents a constant
