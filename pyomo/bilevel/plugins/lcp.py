@@ -11,10 +11,8 @@
 import six
 import logging
 
-from pyomo.core.base import Block, VarList, ConstraintList, Objective, Var, Constraint, maximize, ComponentUID, Set
+from pyomo.core.base import Block, VarList, ConstraintList, Objective, Var, Constraint, maximize, ComponentUID, Set, TransformationFactory
 from pyomo.repn import generate_standard_repn
-from pyomo.repn.collect import collect_linear_terms
-from pyomo.common.plugin import alias
 from pyomo.mpec import ComplementarityList, complements
 from pyomo.bilevel.plugins.transform import Base_BilevelTransformation
 from pyomo.bilevel.components import SubModel
@@ -23,9 +21,9 @@ from pyomo.bilevel.components import SubModel
 logger = logging.getLogger('pyomo.core')
 
 
-class LinearComplementarity_BilevelTransformation(Base_BilevelTransformation):
 
-    alias('bilevel.linear_mpec', doc="Generate a linear MPEC from the optimality conditions of the submodel")
+@TransformationFactory.register('bilevel.linear_mpec', doc="Generate a linear MPEC from the optimality conditions of the submodel")
+class LinearComplementarity_BilevelTransformation(Base_BilevelTransformation):
 
     def __init__(self):
         super(LinearComplementarity_BilevelTransformation, self).__init__()
@@ -225,7 +223,7 @@ class LinearComplementarity_BilevelTransformation(Base_BilevelTransformation):
                 if not (u is None and w is None):
                     utmp[id(cdata)] = (u,w)
             #
-            # Store the coefficients for the contraint variables that are not fixed
+            # Store the coefficients for the constraint variables that are not fixed
             #
             c_terms = generate_standard_repn(cdata.body, compute_values=False)
             #
